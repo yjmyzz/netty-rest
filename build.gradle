@@ -1,0 +1,95 @@
+group 'huijiame'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+//指定仓库位置(查找顺序优先级 :本机.m2 ——> 本机nexus私服 ——> 互联网中央仓库)
+repositories {
+    mavenLocal()
+    maven {
+        //url 'http://maven.oschina.net/content/groups/public'
+        url 'http://localhost:8081/nexus/content/groups/public/'
+    }
+    mavenCentral()
+}
+
+configurations {
+    mybatisGenerator
+}
+
+dependencies {
+
+    compile fileTree(dir: "lib", include: ['*.jar']);
+
+    //编译期 的依赖项
+    compile(
+            'net.sf.json-lib:json-lib:2.4:jdk15',
+            'net.bull.javamelody:javamelody-core:1.9.0',
+
+            'io.netty:netty-all:4.0.31.Final',
+            'io.netty:netty:3.9.4.Final',
+            'org.slf4j:slf4j-api:1.7.12',
+
+            'org.apache.logging.log4j:log4j-api:2.4.1',
+            'org.apache.logging.log4j:log4j-core:2.4.1',
+            'org.apache.logging.log4j:log4j-slf4j-impl:2.4.1',
+            'org.apache.logging.log4j:log4j-1.2-api:2.4.1',
+
+            'org.apache.httpcomponents:httpclient:4.5',
+            'org.apache.httpcomponents:httpcore:4.4.1',
+            'org.apache.httpcomponents:httpmime:4.5.1',
+
+            'com.google.code.gson:gson:2.3.1',
+            'com.alibaba:fastjson:1.2.7',
+
+            'com.thoughtworks.xstream:xstream:1.4.7',
+            'org.hibernate:hibernate-validator:5.2.2.Final',
+            'org.hibernate:hibernate-validator-annotation-processor:5.2.2.Final',
+            'org.jboss.spec.javax.el:jboss-el-api_2.2_spec:1.0.4.Final',
+            'javax.el:javax.el-api:3.0.0',
+            'org.glassfish.web:javax.el:2.2.6',
+
+            'org.springframework:spring-aspects:4.2.2.RELEASE',
+            'org.springframework:spring-core:4.2.2.RELEASE',
+            'org.springframework:spring-beans:4.2.2.RELEASE',
+            'org.springframework:spring-context:4.2.2.RELEASE',
+            'org.springframework:spring-context-support:4.2.2.RELEASE',
+            'org.springframework:spring-aop:4.2.2.RELEASE',
+            'org.springframework:spring-jdbc:4.2.2.RELEASE',
+            'org.springframework:spring-test:4.2.2.RELEASE',
+            'org.springframework:spring-web:4.2.2.RELEASE',
+
+            'org.springframework.security:spring-security-core:3.2.8.RELEASE',
+
+            'org.mortbay.jetty:jetty:6.1.26',
+
+            'mysql:mysql-connector-java:5.1.36',
+
+            'junit:junit:4.12',
+    )
+
+    //测试期的 依赖项:
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+
+}
+
+//指定运行的主类入口
+mainClassName = "demo.soa.misc.main.ServicesServer"
+
+//指定idea的jdk版本
+idea {
+    module {
+        jdkName = '1.8'
+    }
+}
+
+task makePackage(type: Copy, dependsOn: [clean, installDist]) {
+    from 'build/resources/main'
+    into 'build/install/netty-rest/bin/resources'
+}
